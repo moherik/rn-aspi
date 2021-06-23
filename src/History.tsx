@@ -4,10 +4,8 @@ import React from 'react';
 import {ScrollView, View} from 'react-native';
 import {
   Appbar,
-  Colors,
   Title,
   Button,
-  Text,
   Subheading,
   Caption,
   ActivityIndicator,
@@ -19,11 +17,13 @@ import styles from './Style';
 
 export type HistoryPayload = {
   id: number;
-  packetName: string;
-  packetId: number;
-  trxCode: string;
-  price: number;
-  date: string;
+  packet: {
+    name: string;
+  };
+  packet_id: number;
+  trx_code: string;
+  total_price: number;
+  created_at: string;
 };
 
 export const HistoryPage = () => {
@@ -45,6 +45,7 @@ export const HistoryPage = () => {
       await axios
         .get(`${API_URL}/transactions/history`, axiosOpts)
         .then(response => {
+          console.log(response.data);
           setTrxs(response.data);
         })
         .finally(() => setIsLoading(false));
@@ -78,11 +79,9 @@ export const HistoryPage = () => {
             <View style={styles.box} key={trx.id}>
               <View style={styles.rowCenter}>
                 <View>
-                  <Subheading>{trx.packetName}</Subheading>
-                  <Title>Rp. {trx.price}</Title>
-                  <Caption>
-                    ID: {trx.trxCode} | Pada {trx.date}
-                  </Caption>
+                  <Subheading>{trx.packet.name}</Subheading>
+                  <Title>Rp. {trx.total_price}</Title>
+                  <Caption>ID: {trx.trx_code}</Caption>
                 </View>
                 <Button mode="contained" onPress={() => {}}>
                   Beli Lagi

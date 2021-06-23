@@ -23,6 +23,7 @@ export interface Props {
 export const PacketItem: React.FC<Props> = props => {
   const {state} = React.useContext(AuthContext);
   const [visible, setVisible] = React.useState(false);
+  const [visibleError, setVisibleError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [selectedPacketId, setSelectedPacketId] = React.useState<number>();
 
@@ -40,6 +41,7 @@ export const PacketItem: React.FC<Props> = props => {
   const handleHideDialog = () => {
     setSelectedPacketId(undefined);
     setVisible(false);
+    setVisibleError(false);
   };
 
   const handleBuyItem = async () => {
@@ -50,7 +52,9 @@ export const PacketItem: React.FC<Props> = props => {
         .then(response => {
           console.log(response.data);
         })
-        .catch(err => console.error(err.response.data))
+        .catch(_err => {
+          setVisibleError(true);
+        })
         .finally(() => {
           setVisible(false);
           setLoading(false);
@@ -69,6 +73,20 @@ export const PacketItem: React.FC<Props> = props => {
           <Dialog.Actions>
             <Button loading={loading} onPress={handleBuyItem}>
               Beli Sekarang
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      <Portal>
+        <Dialog visible={visibleError} onDismiss={handleHideDialog}>
+          <Dialog.Title>Info</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>Anda sudah punya paket aktif saat ini.</Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button loading={loading} onPress={() => setVisibleError(false)}>
+              OK
             </Button>
           </Dialog.Actions>
         </Dialog>

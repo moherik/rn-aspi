@@ -94,7 +94,6 @@ export const TicketPage = () => {
                 <View style={styles.rowCenter}>
                   <View>
                     <Title>{ticket.title}</Title>
-                    <Caption>Dibuat pada: {ticket.date}</Caption>
                   </View>
                   <Subheading
                     style={{color: ticket.status === 'OPEN' ? 'blue' : 'red'}}>

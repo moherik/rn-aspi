@@ -26,6 +26,17 @@ type LoginRequest = {
   device_name: string;
 };
 
+export type RegisterPayload = {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  phone: string;
+  address: string;
+  gender: string;
+  device_name?: string;
+};
+
 const Stack = createStackNavigator();
 
 const AuthStack = () => {
@@ -53,7 +64,7 @@ const theme = {
 export const AuthContext = React.createContext<AuthContextState>({
   signIn: async () => {},
   signOut: () => {},
-  signUp: () => {},
+  signUp: async () => {},
   state: {},
 });
 
@@ -112,7 +123,19 @@ const App = () => {
         await AsyncStorage.clear();
         dispatch({type: 'SIGN_OUT'});
       },
-      signUp: async () => {},
+      signUp: async (payload: RegisterPayload) => {
+        const url: string = `${API_URL}/auth/register`;
+        await axios
+          .post(url, payload)
+          .then(response => {
+            if (response.status === 200) {
+              const _token = response.data?.token;
+              AsyncStorage.setItem('@token', _token);
+              dispatch({type: 'SIGN_IN', token: _token});
+            }
+          })
+          .catch(err => console.log(err.response.data));
+      },
       state: state,
     }),
     [state],

@@ -1,3 +1,5 @@
+import {RegisterPayload} from '../App';
+
 export type PacketType = {
   id: number;
   name: string;
@@ -10,7 +12,7 @@ export type PacketType = {
 export type AuthContextState = {
   signIn: (username: string, password: string) => Promise<void>;
   signOut: () => void;
-  signUp: () => void;
+  signUp: (payload: RegisterPayload) => Promise<void>;
   state: any;
 };
 

@@ -37,6 +37,7 @@ export const HomePage = () => {
   const [packets, setPackets] = React.useState<Array<PacketType>>([]);
   const [payment, setPayment] = React.useState<PaymentPayload>();
   const [isLoading, setIsLoading] = React.useState(true);
+  const [update, setUpdate] = React.useState(0);
 
   const {signOut, state} = React.useContext(AuthContext);
 
@@ -71,7 +72,7 @@ export const HomePage = () => {
     };
 
     bootstrap();
-  }, [state]);
+  }, [state, update]);
 
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
@@ -84,7 +85,7 @@ export const HomePage = () => {
           minHeight: 200,
         }}>
         <View>
-          <Subheading style={{color: 'white'}}>Selemat Datang,</Subheading>
+          <Subheading style={{color: 'white'}}>Selamat Datang,</Subheading>
           <Title
             style={{
               color: 'white',
@@ -95,7 +96,12 @@ export const HomePage = () => {
           </Title>
         </View>
         <View style={{flexDirection: 'row'}}>
-          <Avatar.Icon size={50} color="white" icon="account" />
+          <IconButton
+            rippleColor={Colors.red500}
+            color="white"
+            icon="refresh"
+            onPress={() => setUpdate(update+1)}
+          />
           <IconButton
             rippleColor={Colors.red500}
             color="white"

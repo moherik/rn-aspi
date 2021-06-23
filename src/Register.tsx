@@ -8,7 +8,9 @@ import {
   Caption,
   TextInput,
   RadioButton,
+  Snackbar,
 } from 'react-native-paper';
+import {AuthContext} from '../App';
 
 export const RegisterPage = () => {
   const navigation = useNavigation();
@@ -20,10 +22,15 @@ export const RegisterPage = () => {
   const [address, setAddress] = React.useState('');
   const [gender, setGender] = React.useState('');
 
+  const [hasError, setHasError] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const {signUp} = React.useContext(AuthContext);
 
-  const register = () => {
+  const register = async () => {
     setIsLoading(true);
+    await signUp({name, username, password, email, phone, address, gender})
+      .catch(_err => setHasError(true))
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -33,6 +40,9 @@ export const RegisterPage = () => {
         <Appbar.Content title="Daftar Akun" />
       </Appbar.Header>
       <ScrollView style={{backgroundColor: 'white'}}>
+        <Snackbar visible={hasError} onDismiss={() => setHasError(false)}>
+          Terjadi kesalahan
+        </Snackbar>
         <View style={{padding: 15}}>
           <View style={{marginBottom: 20}}>
             <TextInput
