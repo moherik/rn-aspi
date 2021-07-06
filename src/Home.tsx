@@ -165,9 +165,8 @@ export const HomePage = () => {
           if (response.data.status === 'PENDING') {
             getTotalPayment();
           } else {
-            console.log(response.data);
-            setStatus(response.data.status);
             setPayment(response.data);
+            setStatus(response.data.status);
             getOrderDetail(response.data.trx_code);
           }
         })
@@ -296,7 +295,7 @@ export const HomePage = () => {
         </View>
       ) : status === 'SUCCESS' ? (
         <View style={styles.box}>
-          <Title>{payment?.packet.name}</Title>
+          <Title>{payment?.packet?.name}</Title>
           <Caption
             style={{
               marginTop: -3,
