@@ -14,6 +14,7 @@ import {AuthContext} from '../App';
 import {API_URL} from './Constant';
 
 import styles from './Style';
+import {curencyFormat} from './utils';
 
 export type HistoryPayload = {
   id: number;
@@ -45,7 +46,6 @@ export const HistoryPage = () => {
       await axios
         .get(`${API_URL}/transactions/history`, axiosOpts)
         .then(response => {
-          console.log(response.data);
           setTrxs(response.data);
         })
         .finally(() => setIsLoading(false));
@@ -80,7 +80,7 @@ export const HistoryPage = () => {
               <View style={styles.rowCenter}>
                 <View>
                   <Subheading>{trx.packet.name}</Subheading>
-                  <Title>Rp. {trx.total_price}</Title>
+                  <Title>{curencyFormat(trx.total_price)}</Title>
                   <Caption>ID: {trx.trx_code}</Caption>
                 </View>
                 <Button mode="contained" onPress={() => {}}>

@@ -18,6 +18,7 @@ import {curencyFormat} from './utils';
 export interface Props {
   type?: string;
   data: PacketType;
+  refresh: () => void;
 }
 
 export const PacketItem: React.FC<Props> = props => {
@@ -49,8 +50,8 @@ export const PacketItem: React.FC<Props> = props => {
       setLoading(true);
       await axios
         .get(`${API_URL}/transactions/buy/${selectedPacketId}`, axiosOpts)
-        .then(response => {
-          console.log(response.data);
+        .then(_response => {
+          props.refresh();
         })
         .catch(_err => {
           setVisibleError(true);

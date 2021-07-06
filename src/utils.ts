@@ -15,6 +15,6 @@ export const curencyFormat = (value: number, prefix = 'Rp. ') => {
   );
 };
 
-export const formatStrDate = (strDate: string | undefined) => {
+export const formatStrDate = (strDate: string) => {
   return strDate;
 };
