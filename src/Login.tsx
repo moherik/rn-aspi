@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {useNavigation} from '@react-navigation/core';
-import {ScrollView, View, Text} from 'react-native';
+import {ScrollView, View, Text, Image} from 'react-native';
 import {Button, Caption, Snackbar, TextInput, Title} from 'react-native-paper';
 import {AuthContext} from '../App';
 
@@ -29,9 +29,12 @@ export const LoginPage = () => {
         Username dan password tidak cocok
       </Snackbar>
 
-      <View style={{marginBottom: 20}}>
-        <Title>Ai Network</Title>
-        <Caption>
+      <View style={{marginBottom: 20, alignItems: 'center'}}>
+        <Image
+          source={require('../image/brand.png')}
+          style={{flex: 1, width: 200, height: 100, resizeMode: 'contain'}}
+        />
+        <Caption style={{textAlign: 'center'}}>
           Masuk menggunakan username dan password untuk dapat mengakses aplikasi
         </Caption>
       </View>

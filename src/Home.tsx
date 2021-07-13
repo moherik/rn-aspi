@@ -23,6 +23,7 @@ import axios from 'axios';
 import {API_URL} from './Constant';
 import {curencyFormat, formatStrDate} from './utils';
 import InAppBrowser from 'react-native-inappbrowser-reborn';
+import {Image} from 'react-native';
 
 type PaymentPayload = {
   orderId: string;
@@ -190,34 +191,43 @@ export const HomePage = () => {
       <ImageBackground
         source={require('../image/bg.jpg')}
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          padding: 20,
+          flexDirection: 'column',
+          paddingBottom: 40,
+          paddingTop: 20,
+          paddingHorizontal: 20,
           minHeight: 200,
         }}>
-        <View>
-          <Subheading style={{color: 'white'}}>Selamat Datang,</Subheading>
-          <Title
-            style={{
-              color: 'white',
-              textTransform: 'uppercase',
-              marginTop: -5,
-            }}>
-            {me?.name}
-          </Title>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View>
+            <Subheading style={{color: 'white'}}>Selamat Datang,</Subheading>
+            <Title
+              style={{
+                color: 'white',
+                textTransform: 'uppercase',
+                marginTop: -5,
+              }}>
+              {me?.name}
+            </Title>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <IconButton
+              rippleColor={Colors.red500}
+              color="white"
+              icon="refresh"
+              onPress={() => setUpdate(update + 1)}
+            />
+            <IconButton
+              rippleColor={Colors.red500}
+              color="white"
+              icon="logout"
+              onPress={() => signOut()}
+            />
+          </View>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <IconButton
-            rippleColor={Colors.red500}
-            color="white"
-            icon="refresh"
-            onPress={() => setUpdate(update + 1)}
-          />
-          <IconButton
-            rippleColor={Colors.red500}
-            color="white"
-            icon="logout"
-            onPress={() => signOut()}
+        <View style={{alignItems: 'center'}}>
+          <Image
+            source={require('../image/brand.png')}
+            style={{flex: 1, width: 200, height: 100, resizeMode: 'contain'}}
           />
         </View>
       </ImageBackground>
