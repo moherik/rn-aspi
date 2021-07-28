@@ -10,6 +10,7 @@ import {
   IconButton,
   Subheading,
 } from 'react-native-paper';
+import messaging from '@react-native-firebase/messaging';
 import {Buffer} from 'buffer';
 global.Buffer = Buffer;
 
@@ -91,43 +92,25 @@ export const HomePage = () => {
   };
 
   const openLink = async (url: string) => {
-    try {
-      if (await InAppBrowser.isAvailable()) {
-        await InAppBrowser.open(url, {
-          // Android Properties
-          showTitle: true,
-          toolbarColor: '#6200EE',
-          secondaryToolbarColor: 'black',
-          navigationBarColor: 'black',
-          navigationBarDividerColor: 'white',
-          enableUrlBarHiding: true,
-          forceCloseOnRedirection: false,
-          animations: {
-            startEnter: 'slide_in_right',
-            startExit: 'slide_out_left',
-            endEnter: 'slide_in_left',
-            endExit: 'slide_out_right',
-          },
-        });
-      } else {
-        Linking.openURL(url);
-      }
-    } catch (error) {
-      console.log(error.message);
+    if (await InAppBrowser.isAvailable()) {
+      await InAppBrowser.open(url, {
+        showTitle: true,
+        toolbarColor: '#6200EE',
+        secondaryToolbarColor: 'black',
+        navigationBarColor: 'black',
+        navigationBarDividerColor: 'white',
+        enableUrlBarHiding: true,
+        forceCloseOnRedirection: false,
+        animations: {
+          startEnter: 'slide_in_right',
+          startExit: 'slide_out_left',
+          endEnter: 'slide_in_left',
+          endExit: 'slide_out_right',
+        },
+      });
+    } else {
+      Linking.openURL(url);
     }
-  };
-
-  const getTotalPayment = async () => {
-    await axios
-      .get(`${API_URL}/transactions/total-payment`, {
-        headers: {Authorization: `Bearer ${state.userToken}`},
-      })
-      .then(res => {
-        setStatus('PENDING');
-        setPayment(res.data);
-        console.log(res.data);
-      })
-      .catch(err => console.error(err.response.data));
   };
 
   const getOrderDetail = async (trxCode: string) => {
@@ -183,7 +166,28 @@ export const HomePage = () => {
         .finally(() => setIsLoading(false));
     };
 
+    const getTotalPayment = async () => {
+      await axios
+        .get(`${API_URL}/transactions/total-payment`, {
+          headers: {Authorization: `Bearer ${state.userToken}`},
+        })
+        .then(res => {
+          setStatus('PENDING');
+          setPayment(res.data);
+          console.log(res.data);
+        })
+        .catch(err => console.error(err.response.data));
+    };
+
     bootstrap();
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      if (remoteMessage) {
+        setUpdate(update + 1);
+      }
+    });
+
+    return unsubscribe;
   }, [state, update]);
 
   return (

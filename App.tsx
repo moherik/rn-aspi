@@ -1,5 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
 import 'react-native-gesture-handler';
 import React from 'react';
+import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {
   ActivityIndicator,
@@ -18,7 +20,7 @@ import {API_URL} from './src/Constant';
 
 import axios from 'axios';
 import {AuthContextState, AuthReducerState} from './src/Type';
-import {View} from 'react-native';
+import NotificationController from './src/NotificationCotroller';
 
 type LoginRequest = {
   username: string;
@@ -108,16 +110,13 @@ const App = () => {
         };
 
         const url: string = `${API_URL}/auth/login`;
-        await axios
-          .post(url, payload)
-          .then(response => {
-            if (response.status === 200) {
-              const _token = response.data?.token;
-              AsyncStorage.setItem('@token', _token);
-              dispatch({type: 'SIGN_IN', token: _token});
-            }
-          })
-          .catch(err => console.log(err.response.data));
+        await axios.post(url, payload).then(response => {
+          if (response.status === 200) {
+            const _token = response.data?.token;
+            AsyncStorage.setItem('@token', _token);
+            dispatch({type: 'SIGN_IN', token: _token});
+          }
+        });
       },
       signOut: async () => {
         await AsyncStorage.clear();
@@ -152,7 +151,10 @@ const App = () => {
           ) : !state.userToken ? (
             <AuthStack />
           ) : (
-            <MainNavigation />
+            <>
+              <NotificationController />
+              <MainNavigation />
+            </>
           )}
         </NavigationContainer>
       </PaperProvider>

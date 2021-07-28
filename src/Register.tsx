@@ -29,7 +29,7 @@ export const RegisterPage = () => {
   const register = async () => {
     setIsLoading(true);
     await signUp({name, username, password, email, phone, address, gender})
-      .catch(_err => setHasError(true))
+      .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
   };
 

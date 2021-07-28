@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "755084407333",
+    "project_id": "aspi-d62ed",
+    "storage_bucket": "aspi-d62ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755084407333:android:e28ccbb5a41411322b45cc",
+        "android_client_info": {
+          "package_name": "com.aspi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755084407333-geg6fti77atp3j0jnl139tkqfh2jkffd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aspi",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "755084407333-7engtij7nrd1haq300mo0msg80f3qrct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApwpc999f6WnfToJ0_Ub_idw41IcVd3R4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755084407333-7engtij7nrd1haq300mo0msg80f3qrct.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
