@@ -20,7 +20,6 @@ import {API_URL} from './src/Constant';
 
 import axios from 'axios';
 import {AuthContextState, AuthReducerState} from './src/Type';
-import NotificationController from './src/NotificationCotroller';
 
 type LoginRequest = {
   username: string;
@@ -151,10 +150,7 @@ const App = () => {
           ) : !state.userToken ? (
             <AuthStack />
           ) : (
-            <>
-              <NotificationController />
-              <MainNavigation />
-            </>
+            <MainNavigation />
           )}
         </NavigationContainer>
       </PaperProvider>

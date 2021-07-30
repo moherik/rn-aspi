@@ -9,6 +9,7 @@ import {
   Colors,
   IconButton,
   Subheading,
+  Snackbar,
 } from 'react-native-paper';
 import messaging from '@react-native-firebase/messaging';
 import {Buffer} from 'buffer';
@@ -54,6 +55,12 @@ export const HomePage = () => {
   const [status, setStatus] = React.useState<
     'LOADING' | 'PENDING' | 'WAITING' | 'SUCCESS'
   >('LOADING');
+
+  const [visible, setVisible] = React.useState(false);
+  const [message, setMessage] = React.useState<string | undefined>('');
+  const [title, setTitle] = React.useState<string | undefined>('');
+
+  const onDismissSnackBar = () => setVisible(false);
 
   const [trxDetail, setTrxDetail] = React.useState<{
     payment_code: string;
@@ -182,162 +189,167 @@ export const HomePage = () => {
     bootstrap();
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      if (remoteMessage) {
-        setUpdate(update + 1);
-      }
+      setMessage(remoteMessage.notification?.body);
+      setTitle(remoteMessage.notification?.title);
+      setVisible(!visible);
     });
 
     return unsubscribe;
-  }, [state, update]);
+  }, [state, update, visible]);
 
   return (
-    <ScrollView style={{backgroundColor: 'white'}}>
-      <ImageBackground
-        source={require('../image/bg.jpg')}
-        style={{
-          flexDirection: 'column',
-          paddingBottom: 40,
-          paddingTop: 20,
-          paddingHorizontal: 20,
-          minHeight: 200,
-        }}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View>
-            <Subheading style={{color: 'white'}}>Selamat Datang,</Subheading>
-            <Title
-              style={{
-                color: 'white',
-                textTransform: 'uppercase',
-                marginTop: -5,
-              }}>
-              {me?.name}
-            </Title>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-            <IconButton
-              rippleColor={Colors.red500}
-              color="white"
-              icon="refresh"
-              onPress={() => setUpdate(update + 1)}
-            />
-            <IconButton
-              rippleColor={Colors.red500}
-              color="white"
-              icon="logout"
-              onPress={() => signOut()}
-            />
-          </View>
-        </View>
-        <View style={{alignItems: 'center'}}>
-          <Image
-            source={require('../image/brand.png')}
-            style={{flex: 1, width: 200, height: 100, resizeMode: 'contain'}}
-          />
-        </View>
-      </ImageBackground>
-
-      <View
-        style={{
-          paddingHorizontal: 15,
-          paddingVertical: 5,
-        }}>
-        <Caption>
-          {status === 'SUCCESS' ? 'Paket Aktif' : 'Tagihan Bulan Ini'}
-        </Caption>
-      </View>
-
-      {status === 'LOADING' ? (
-        <ActivityIndicator
-          style={{marginTop: 50}}
-          animating={true}
-          color={Colors.amber400}
-          size={30}
-        />
-      ) : status === 'PENDING' ? (
-        <View style={styles.box}>
-          <View style={styles.rowCenter}>
+    <>
+      <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
+        {title}: {message}
+      </Snackbar>
+      <ScrollView style={{backgroundColor: 'white', flex: 1}}>
+        <ImageBackground
+          source={require('../image/bg.jpg')}
+          style={{
+            flexDirection: 'column',
+            paddingBottom: 40,
+            paddingTop: 20,
+            paddingHorizontal: 20,
+            minHeight: 200,
+          }}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View>
-              <Title>{curencyFormat(payment?.unpaid || 0)}</Title>
-              <Caption>Bayar segera sebelum tanggal:</Caption>
-              <Caption style={{marginTop: -2}}>
-                {formatStrDate(payment?.payDate!!)}
-              </Caption>
-            </View>
-            <Button
-              mode="contained"
-              loading={loadingPay}
-              onPress={() => handlePay(payment?.orderId!!)}>
-              Bayar
-            </Button>
-          </View>
-        </View>
-      ) : status === 'WAITING' ? (
-        <View style={styles.box}>
-          <View style={styles.rowCenter}>
-            <View>
-              <Title>{curencyFormat(payment?.total_price || 0)}</Title>
-              <Caption>
-                {trxDetail.transaction_status === 'pending'
-                  ? 'Segera selesaikan pembayaran:'
-                  : ''}
-              </Caption>
-              <Caption
+              <Subheading style={{color: 'white'}}>Selamat Datang,</Subheading>
+              <Title
                 style={{
-                  marginTop: -4,
+                  color: 'white',
                   textTransform: 'uppercase',
-                  fontWeight: 'bold',
+                  marginTop: -5,
                 }}>
-                {trxDetail.payment_type} {trxDetail.store || ''}
-              </Caption>
-              {trxDetail.va_numbers.length > 0 ? (
-                trxDetail.va_numbers.map(va => (
-                  <Caption style={{marginTop: -4}}>
-                    <Text
-                      style={{
-                        textTransform: 'uppercase',
-                      }}>{`VA ${va.bank}`}</Text>
-                    : {va.va_number}
-                  </Caption>
-                ))
-              ) : (
-                <Caption style={{marginTop: -4}}>
-                  Kode transaksi: {trxDetail.payment_code}
-                </Caption>
-              )}
+                {me?.name}
+              </Title>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <IconButton
+                rippleColor={Colors.red500}
+                color="white"
+                icon="refresh"
+                onPress={() => setUpdate(update + 1)}
+              />
+              <IconButton
+                rippleColor={Colors.red500}
+                color="white"
+                icon="logout"
+                onPress={() => signOut()}
+              />
             </View>
           </View>
-        </View>
-      ) : status === 'SUCCESS' ? (
-        <View style={styles.box}>
-          <Title>{payment?.packet?.name}</Title>
-          <Caption
-            style={{
-              marginTop: -3,
-              marginBottom: 10,
-            }}>
-            {`Speed: ${payment?.packet.speed} Mbps`} |{' '}
-            {curencyFormat(+payment?.packet.price!!)}
+          <View style={{alignItems: 'center'}}>
+            <Image
+              source={require('../image/brand.png')}
+              style={{flex: 1, width: 200, height: 100, resizeMode: 'contain'}}
+            />
+          </View>
+        </ImageBackground>
+
+        <View
+          style={{
+            paddingHorizontal: 15,
+            paddingVertical: 5,
+          }}>
+          <Caption>
+            {status === 'SUCCESS' ? 'Paket Aktif' : 'Tagihan Bulan Ini'}
           </Caption>
         </View>
-      ) : null}
 
-      {isLoading ? (
-        <ActivityIndicator
-          style={{marginTop: 50}}
-          animating={true}
-          color={Colors.amber400}
-          size={30}
-        />
-      ) : (
-        packets.map(packet => (
-          <PacketItem
-            type="home"
-            key={packet.id}
-            data={packet}
-            refresh={() => setUpdate(update + 1)}
+        {status === 'LOADING' ? (
+          <ActivityIndicator
+            style={{marginTop: 50}}
+            animating={true}
+            color={Colors.amber400}
+            size={30}
           />
-        ))
-      )}
-    </ScrollView>
+        ) : status === 'PENDING' ? (
+          <View style={styles.box}>
+            <View style={styles.rowCenter}>
+              <View>
+                <Title>{curencyFormat(payment?.unpaid || 0)}</Title>
+                <Caption>Bayar segera sebelum tanggal:</Caption>
+                <Caption style={{marginTop: -2}}>
+                  {formatStrDate(payment?.payDate!!)}
+                </Caption>
+              </View>
+              <Button
+                mode="contained"
+                loading={loadingPay}
+                onPress={() => handlePay(payment?.orderId!!)}>
+                Bayar
+              </Button>
+            </View>
+          </View>
+        ) : status === 'WAITING' ? (
+          <View style={styles.box}>
+            <View style={styles.rowCenter}>
+              <View>
+                <Title>{curencyFormat(payment?.total_price || 0)}</Title>
+                <Caption>
+                  {trxDetail.transaction_status === 'pending'
+                    ? 'Segera selesaikan pembayaran:'
+                    : ''}
+                </Caption>
+                <Caption
+                  style={{
+                    marginTop: -4,
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                  }}>
+                  {trxDetail.payment_type} {trxDetail.store || ''}
+                </Caption>
+                {trxDetail.va_numbers.length > 0 ? (
+                  trxDetail.va_numbers.map(va => (
+                    <Caption style={{marginTop: -4}}>
+                      <Text
+                        style={{
+                          textTransform: 'uppercase',
+                        }}>{`VA ${va.bank}`}</Text>
+                      : {va.va_number}
+                    </Caption>
+                  ))
+                ) : (
+                  <Caption style={{marginTop: -4}}>
+                    Kode transaksi: {trxDetail.payment_code}
+                  </Caption>
+                )}
+              </View>
+            </View>
+          </View>
+        ) : status === 'SUCCESS' ? (
+          <View style={styles.box}>
+            <Title>{payment?.packet?.name}</Title>
+            <Caption
+              style={{
+                marginTop: -3,
+                marginBottom: 10,
+              }}>
+              {`Speed: ${payment?.packet.speed} Mbps`} |{' '}
+              {curencyFormat(+payment?.packet.price!!)}
+            </Caption>
+          </View>
+        ) : null}
+
+        {isLoading ? (
+          <ActivityIndicator
+            style={{marginTop: 50}}
+            animating={true}
+            color={Colors.amber400}
+            size={30}
+          />
+        ) : (
+          packets.map(packet => (
+            <PacketItem
+              type="home"
+              key={packet.id}
+              data={packet}
+              refresh={() => setUpdate(update + 1)}
+            />
+          ))
+        )}
+      </ScrollView>
+    </>
   );
 };

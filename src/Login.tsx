@@ -52,7 +52,8 @@ export const LoginPage = () => {
           setVisible(false);
         }
       })
-      .catch(() => {
+      .catch(error => {
+        console.log(error.response.data);
         showError('Terjadi kesalahan saat mengirim link ke email');
       })
       .finally(() => setIsLoadingReset(false));
